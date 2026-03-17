@@ -31,9 +31,10 @@ app.use("/api/admin", adminRouter);
 const registry = Registry.getInstance();
 
 async function main() {
+  httpServer.listen(WS_PORT, "0.0.0.0", () => {
+    console.log(`Socket server running on port ${WS_PORT}`);
+  });
   await connectDB();
-  console.log(`Socket server running on port ${WS_PORT}`);
-  httpServer.listen(WS_PORT, "0.0.0.0");
 }
 
 io.on("connection", (socket: Socket) => {
