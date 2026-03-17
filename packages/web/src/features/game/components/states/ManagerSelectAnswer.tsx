@@ -23,7 +23,7 @@ const ManagerSelectAnswer = ({ data: { question, totalPlayer } }: Props) => {
 
       <div className="w-full max-w-md">
         <div className="mb-2 flex justify-between text-sm font-semibold text-white">
-          <span>Đã trả lời</span>
+          <span>Answered</span>
           <span>
             {answeredCount} / {total}
           </span>

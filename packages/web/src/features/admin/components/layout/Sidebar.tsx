@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard" },
-  { href: "/admin/game-history", label: "Lịch sử game" },
-  { href: "/admin/settings", label: "Cài đặt" },
+  { href: "/admin/game-history", label: "Game History" },
+  { href: "/admin/settings", label: "Settings" },
 ];
 
 const Sidebar = () => {

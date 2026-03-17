@@ -41,7 +41,7 @@ const QuestionEditor = ({
   return (
     <div className="rounded-lg border bg-white p-4">
       <div className="mb-4 flex items-center justify-between">
-        <span className="font-semibold">Câu {index + 1}</span>
+        <span className="font-semibold">Question {index + 1}</span>
         <div className="flex gap-1">
           <Button
             size="sm"
@@ -60,18 +60,18 @@ const QuestionEditor = ({
             ↓
           </Button>
           <Button size="sm" variant="ghost" onClick={onDelete}>
-            Xóa
+            Delete
           </Button>
         </div>
       </div>
 
       <div className="space-y-4">
         <div>
-          <Label>Câu hỏi</Label>
+          <Label>Question</Label>
           <Textarea
             value={data.question}
             onChange={(e) => update({ question: e.target.value })}
-            placeholder="Nhập câu hỏi..."
+            placeholder="Enter question..."
             rows={2}
           />
         </div>
@@ -79,7 +79,7 @@ const QuestionEditor = ({
         <MediaPicker
           value={data.image || ""}
           onChange={(url) => update({ image: url || undefined })}
-          label="Hình ảnh"
+          label="Image"
         />
         <MediaPicker
           value={data.video || ""}
@@ -94,7 +94,7 @@ const QuestionEditor = ({
 
         <div className="flex gap-4">
           <div>
-            <Label>Cooldown (giây)</Label>
+            <Label>Cooldown (seconds)</Label>
             <Input
               type="number"
               min={1}
@@ -107,7 +107,7 @@ const QuestionEditor = ({
             />
           </div>
           <div>
-            <Label>Thời gian trả lời (giây)</Label>
+            <Label>Answer time (seconds)</Label>
             <Input
               type="number"
               min={5}
@@ -120,7 +120,7 @@ const QuestionEditor = ({
         </div>
 
         <div>
-          <Label>Đáp án (chọn đáp án đúng bằng radio)</Label>
+          <Label>Answers (select the correct answer)</Label>
           <AnswerInput
             answers={data.answers}
             solution={data.solution}

@@ -90,7 +90,7 @@ const MediaPicker = ({
             onClick={() => fileRef.current?.click()}
             disabled={state === "uploading"}
           >
-            {state === "uploading" ? "Đang upload..." : "Chọn file"}
+            {state === "uploading" ? "Uploading..." : "Choose file"}
           </Button>
           {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
           {value && state === "done" && <MediaPreview url={value} />}

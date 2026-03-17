@@ -46,15 +46,15 @@ const QuizCard = ({
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-2">
-          <Badge variant="secondary">{questionCount} câu</Badge>
+          <Badge variant="secondary">{questionCount} questions</Badge>
           <span className="text-xs text-gray-500">
-            {new Date(updatedAt).toLocaleDateString("vi-VN")}
+            {new Date(updatedAt).toLocaleDateString("en-US")}
           </span>
         </div>
       </CardContent>
       <CardFooter className="flex gap-2">
         <Button size="sm" onClick={() => navigate(`/admin/quiz/${id}`)}>
-          Sửa
+          Edit
         </Button>
         <Button
           size="sm"
@@ -71,16 +71,16 @@ const QuizCard = ({
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Xóa quiz?</AlertDialogTitle>
+              <AlertDialogTitle>Delete quiz?</AlertDialogTitle>
               <AlertDialogDescription>
-                Hành động này không thể hoàn tác. Quiz "{subject}" sẽ bị xóa
-                vĩnh viễn.
+                This action cannot be undone. Quiz "{subject}" will be
+                permanently deleted.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={() => onDelete(id)}>
-                Xóa
+                Delete
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

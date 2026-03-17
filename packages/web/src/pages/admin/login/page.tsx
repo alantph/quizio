@@ -22,7 +22,7 @@ const AdminLoginPage = () => {
     try {
       await login(username, password);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Đăng nhập thất bại");
+      setError(err instanceof Error ? err.message : "Login failed");
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ const AdminLoginPage = () => {
             </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
         </CardContent>

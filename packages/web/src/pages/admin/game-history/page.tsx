@@ -49,11 +49,11 @@ const GameHistoryPage = () => {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Lịch sử game</h1>
+      <h1 className="text-xl font-semibold">Game History</h1>
 
       <div className="flex flex-wrap gap-3">
         <Input
-          placeholder="Tìm theo tên quiz..."
+          placeholder="Search by quiz name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-56"
@@ -70,20 +70,20 @@ const GameHistoryPage = () => {
           onChange={(e) => setTo(e.target.value)}
           className="w-40"
         />
-        <Button onClick={load}>Lọc</Button>
+        <Button onClick={load}>Filter</Button>
       </div>
 
       {loading ? (
-        <p className="text-gray-500">Đang tải...</p>
+        <p className="text-gray-500">Loading...</p>
       ) : (
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Quiz</TableHead>
-              <TableHead>Ngày chơi</TableHead>
-              <TableHead>Số người</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Players</TableHead>
               <TableHead>Manager</TableHead>
-              <TableHead>Thao tác</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -91,7 +91,7 @@ const GameHistoryPage = () => {
               <TableRow key={r._id}>
                 <TableCell>{r.quizzSubject}</TableCell>
                 <TableCell>
-                  {new Date(r.playedAt).toLocaleDateString("vi-VN", {
+                  {new Date(r.playedAt).toLocaleDateString("en-US", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",
@@ -107,7 +107,7 @@ const GameHistoryPage = () => {
                       size="sm"
                       onClick={() => navigate(`/admin/game-history/${r._id}`)}
                     >
-                      Xem
+                      View
                     </Button>
                     <Button
                       size="sm"
@@ -129,7 +129,7 @@ const GameHistoryPage = () => {
             {filtered.length === 0 && !loading && (
               <TableRow>
                 <TableCell colSpan={5} className="text-center text-gray-500">
-                  Không có dữ liệu
+                  No data
                 </TableCell>
               </TableRow>
             )}

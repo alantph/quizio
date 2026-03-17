@@ -48,7 +48,7 @@ const AdminDashboardPage = () => {
       refetch();
     } catch (err: unknown) {
       alert(
-        "Import thất bại: " + (err instanceof Error ? err.message : "Error"),
+        "Import failed: " + (err instanceof Error ? err.message : "Error"),
       );
     }
     e.target.value = "";
@@ -65,13 +65,13 @@ const AdminDashboardPage = () => {
         </div>
         <div className="rounded-lg bg-white p-4 shadow-sm">
           <div className="text-2xl font-bold">{totalQuestions}</div>
-          <div className="text-sm text-gray-500">Tổng câu hỏi</div>
+          <div className="text-sm text-gray-500">Total Questions</div>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <Input
-          placeholder="Tìm quiz..."
+          placeholder="Search quizzes..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-64"
@@ -81,8 +81,8 @@ const AdminDashboardPage = () => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="updatedAt">Mới nhất</SelectItem>
-            <SelectItem value="name">Tên A-Z</SelectItem>
+            <SelectItem value="updatedAt">Latest</SelectItem>
+            <SelectItem value="name">Name A-Z</SelectItem>
           </SelectContent>
         </Select>
         <input
@@ -96,14 +96,14 @@ const AdminDashboardPage = () => {
           Import
         </Button>
         <Button onClick={() => navigate("/admin/quiz/new")}>
-          + Tạo quiz mới
+          + New Quiz
         </Button>
       </div>
 
       {isLoading ? (
-        <div className="text-gray-500">Đang tải...</div>
+        <div className="text-gray-500">Loading...</div>
       ) : quizzes.length === 0 ? (
-        <div className="text-gray-500">Chưa có quiz nào</div>
+        <div className="text-gray-500">No quizzes yet</div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {quizzes.map((quiz) => (

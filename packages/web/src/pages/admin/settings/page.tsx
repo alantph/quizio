@@ -49,7 +49,7 @@ const AdminSettingsPage = () => {
       await settingsApi.addUser(newUsername, newPassword);
       setNewUsername("");
       setNewPassword("");
-      setMessage("Thêm admin thành công");
+      setMessage("Admin added successfully");
       loadUsers();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error");
@@ -59,7 +59,7 @@ const AdminSettingsPage = () => {
   const handleDeleteUser = async (id: string) => {
     try {
       await settingsApi.deleteUser(id);
-      setMessage("Đã xóa admin");
+      setMessage("Admin deleted");
       loadUsers();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error");
@@ -73,7 +73,7 @@ const AdminSettingsPage = () => {
       await settingsApi.changePassword(currentPw, newPw);
       setCurrentPw("");
       setNewPw("");
-      setMessage("Đổi mật khẩu thành công");
+      setMessage("Password changed successfully");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error");
     }
@@ -85,7 +85,7 @@ const AdminSettingsPage = () => {
       await settingsApi.resetUserPassword(id, resetPwValue);
       setResetPwId(null);
       setResetPwValue("");
-      setMessage("Reset mật khẩu thành công");
+      setMessage("Password reset successfully");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error");
     }
@@ -97,13 +97,13 @@ const AdminSettingsPage = () => {
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <section>
-        <h2 className="mb-4 text-lg font-semibold">Quản lý admin</h2>
+        <h2 className="mb-4 text-lg font-semibold">Admin Management</h2>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Username</TableHead>
-              <TableHead>Ngày tạo</TableHead>
-              <TableHead>Thao tác</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -111,7 +111,7 @@ const AdminSettingsPage = () => {
               <TableRow key={u.id}>
                 <TableCell>{u.username}</TableCell>
                 <TableCell>
-                  {new Date(u.createdAt).toLocaleDateString("vi-VN")}
+                  {new Date(u.createdAt).toLocaleDateString("en-US")}
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -131,7 +131,7 @@ const AdminSettingsPage = () => {
                           variant="destructive"
                           onClick={() => handleDeleteUser(u.id)}
                         >
-                          Xóa
+                          Delete
                         </Button>
                       </>
                     )}
@@ -140,7 +140,7 @@ const AdminSettingsPage = () => {
                         <Input
                           value={resetPwValue}
                           onChange={(e) => setResetPwValue(e.target.value)}
-                          placeholder="Mật khẩu mới"
+                          placeholder="New password"
                           className="w-36"
                         />
                         <Button
@@ -160,29 +160,29 @@ const AdminSettingsPage = () => {
 
         <form onSubmit={handleAddUser} className="mt-4 flex items-end gap-2">
           <div>
-            <Label>Username mới</Label>
+            <Label>New username</Label>
             <Input
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value)}
             />
           </div>
           <div>
-            <Label>Mật khẩu</Label>
+            <Label>Password</Label>
             <Input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </div>
-          <Button type="submit">Thêm admin</Button>
+          <Button type="submit">Add admin</Button>
         </form>
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-semibold">Đổi mật khẩu của tôi</h2>
+        <h2 className="mb-4 text-lg font-semibold">Change my password</h2>
         <form onSubmit={handleChangePassword} className="space-y-3 max-w-sm">
           <div>
-            <Label>Mật khẩu hiện tại</Label>
+            <Label>Current password</Label>
             <Input
               type="password"
               value={currentPw}
@@ -190,14 +190,14 @@ const AdminSettingsPage = () => {
             />
           </div>
           <div>
-            <Label>Mật khẩu mới</Label>
+            <Label>New password</Label>
             <Input
               type="password"
               value={newPw}
               onChange={(e) => setNewPw(e.target.value)}
             />
           </div>
-          <Button type="submit">Đổi mật khẩu</Button>
+          <Button type="submit">Change password</Button>
         </form>
       </section>
     </div>

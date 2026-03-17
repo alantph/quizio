@@ -34,14 +34,14 @@ const AnswerInput = ({ answers, solution, onChange }: AnswerInputProps) => {
           <Input
             value={answer}
             onChange={(e) => updateAnswer(i, e.target.value)}
-            placeholder={`Đáp án ${i + 1}`}
+            placeholder={`Answer ${i + 1}`}
             className="flex-1"
           />
           <input
             type="radio"
             checked={solution === i}
             onChange={() => onChange(answers, i)}
-            title="Đáp án đúng"
+            title="Correct answer"
           />
           {answers.length > 2 && (
             <Button size="sm" variant="ghost" onClick={() => removeAnswer(i)}>
@@ -52,7 +52,7 @@ const AnswerInput = ({ answers, solution, onChange }: AnswerInputProps) => {
       ))}
       {answers.length < 4 && (
         <Button size="sm" variant="outline" onClick={addAnswer}>
-          + Thêm đáp án
+          + Add answer
         </Button>
       )}
     </div>

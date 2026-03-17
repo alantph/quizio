@@ -107,11 +107,11 @@ const Responses = ({
             <table className="w-full text-sm text-white">
               <thead>
                 <tr className="border-b border-white/20 text-left">
-                  <th className="pb-2 pr-4">Tên</th>
-                  <th className="pb-2 pr-4">Đáp án</th>
-                  <th className="pb-2 pr-4">Kết quả</th>
-                  <th className="pb-2 pr-4">Điểm câu</th>
-                  <th className="pb-2">Tổng điểm</th>
+                  <th className="pb-2 pr-4">Name</th>
+                  <th className="pb-2 pr-4">Answer</th>
+                  <th className="pb-2 pr-4">Result</th>
+                  <th className="pb-2 pr-4">Points</th>
+                  <th className="pb-2">Total</th>
                 </tr>
               </thead>
               <tbody>

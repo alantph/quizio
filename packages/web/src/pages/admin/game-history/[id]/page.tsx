@@ -46,7 +46,7 @@ const GameDetailPage = () => {
     }
   }, [id]);
 
-  if (!result) return <p className="text-gray-500">Đang tải...</p>;
+  if (!result) return <p className="text-gray-500">Loading...</p>;
 
   const currentQ = result.questions[parseInt(selectedQuestion)];
 
@@ -56,8 +56,8 @@ const GameDetailPage = () => {
         <div>
           <h1 className="text-xl font-semibold">{result.quizzSubject}</h1>
           <p className="text-sm text-gray-500">
-            {new Date(result.playedAt).toLocaleString("vi-VN")} ·{" "}
-            {result.totalPlayers} người chơi · Manager: {result.createdBy}
+            {new Date(result.playedAt).toLocaleString("en-US")} ·{" "}
+            {result.totalPlayers} players · Manager: {result.createdBy}
           </p>
         </div>
         <div className="flex gap-2">
@@ -77,24 +77,24 @@ const GameDetailPage = () => {
             variant="ghost"
             onClick={() => navigate("/admin/game-history")}
           >
-            ← Quay lại
+            ← Back
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger value="overview">Tổng quan</TabsTrigger>
-          <TabsTrigger value="questions">Từng câu hỏi</TabsTrigger>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="questions">By Question</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Xếp hạng</TableHead>
-                <TableHead>Tên</TableHead>
-                <TableHead>Tổng điểm</TableHead>
+                <TableHead>Rank</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Total Points</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -127,7 +127,7 @@ const GameDetailPage = () => {
               <SelectContent>
                 {result.questions.map((q, i) => (
                   <SelectItem key={i} value={String(i)}>
-                    Câu {i + 1}: {q.questionText.slice(0, 40)}...
+                    Q{i + 1}: {q.questionText.slice(0, 40)}...
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -154,10 +154,10 @@ const GameDetailPage = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Tên</TableHead>
-                      <TableHead>Đáp án</TableHead>
-                      <TableHead>Kết quả</TableHead>
-                      <TableHead>Điểm</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Answer</TableHead>
+                      <TableHead>Result</TableHead>
+                      <TableHead>Points</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

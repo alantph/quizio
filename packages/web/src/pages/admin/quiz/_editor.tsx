@@ -78,7 +78,7 @@ const QuizEditorPage = ({ mode, id }: Props) => {
       }
       navigate("/admin/dashboard");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Lưu thất bại");
+      setError(err instanceof Error ? err.message : "Save failed");
     } finally {
       setSaving(false);
     }
@@ -87,11 +87,11 @@ const QuizEditorPage = ({ mode, id }: Props) => {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <Label>Tên quiz</Label>
+        <Label>Quiz name</Label>
         <Input
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
-          placeholder="Nhập tên quiz..."
+          placeholder="Enter quiz name..."
         />
       </div>
 
@@ -111,17 +111,17 @@ const QuizEditorPage = ({ mode, id }: Props) => {
       </div>
 
       <Button variant="outline" onClick={addQuestion} className="w-full">
-        + Thêm câu hỏi
+        + Add question
       </Button>
 
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <div className="flex justify-end gap-2">
         <Button variant="outline" onClick={() => navigate("/admin/dashboard")}>
-          Hủy
+          Cancel
         </Button>
         <Button onClick={handleSave} disabled={saving}>
-          {saving ? "Đang lưu..." : "Lưu"}
+          {saving ? "Saving..." : "Save"}
         </Button>
       </div>
     </div>
