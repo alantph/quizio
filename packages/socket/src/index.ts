@@ -33,7 +33,7 @@ const registry = Registry.getInstance();
 async function main() {
   await connectDB();
   console.log(`Socket server running on port ${WS_PORT}`);
-  httpServer.listen(WS_PORT);
+  httpServer.listen(WS_PORT, "0.0.0.0");
 }
 
 io.on("connection", (socket: Socket) => {
