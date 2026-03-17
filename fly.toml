@@ -1,4 +1,4 @@
-app = "app-delicate-dust-5401"
+app = "quizio-socket"
 primary_region = "sin"
 
 [build]
