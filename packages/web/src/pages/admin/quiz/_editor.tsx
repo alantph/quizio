@@ -2,9 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { quizzesApi } from "@quizio/web/features/admin/api/quizzes";
-import QuestionEditor, {
-  QuestionData,
-} from "@quizio/web/features/admin/components/question/QuestionEditor";
+import QuestionEditor from "@quizio/web/features/admin/components/question/QuestionEditor";
+import type { QuestionData } from "@quizio/web/features/admin/components/question/QuestionEditor";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
