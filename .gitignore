@@ -1,0 +1,8 @@
+/node_modules
+/config
+.env
+.secrets
+release.json
+web2
+docs/
+CLAUDE.md

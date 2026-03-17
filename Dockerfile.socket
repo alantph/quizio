@@ -1,0 +1,37 @@
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+RUN npm install -g pnpm
+
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/common/package.json ./packages/common/
+COPY packages/socket/package.json ./packages/socket/
+
+RUN pnpm install --frozen-lockfile
+
+COPY packages/common ./packages/common
+COPY packages/socket ./packages/socket
+
+RUN pnpm --filter socket build
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+RUN npm install -g pnpm
+
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/common/package.json ./packages/common/
+COPY packages/socket/package.json ./packages/socket/
+
+RUN pnpm install --prod --frozen-lockfile
+
+COPY --from=builder /app/packages/socket/dist ./packages/socket/dist
+
+ENV NODE_ENV=production
+ENV WS_PORT=3001
+
+EXPOSE 3001
+
+CMD ["node", "packages/socket/dist/index.cjs"]

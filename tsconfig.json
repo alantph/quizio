@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "noErrorTruncation": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@quizio/common/*": ["./packages/common/src/*"],
+      "@quizio/socket/*": ["./packages/socket/src/*"],
+      "@quizio/web/*": ["./packages/web/src/*"]
+    },
+    "strict": true,
+    "strictNullChecks": true
+  }
+}

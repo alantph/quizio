@@ -1,0 +1,135 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import AnswerInput from "./AnswerInput";
+import MediaPicker from "./MediaPicker";
+
+export interface QuestionData {
+  question: string;
+  answers: string[];
+  solution: number;
+  cooldown: number;
+  time: number;
+  image?: string;
+  video?: string;
+  audio?: string;
+}
+
+interface QuestionEditorProps {
+  index: number;
+  data: QuestionData;
+  total: number;
+  onChange: (data: QuestionData) => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onDelete: () => void;
+}
+
+const QuestionEditor = ({
+  index,
+  data,
+  total,
+  onChange,
+  onMoveUp,
+  onMoveDown,
+  onDelete,
+}: QuestionEditorProps) => {
+  const update = (patch: Partial<QuestionData>) =>
+    onChange({ ...data, ...patch });
+
+  return (
+    <div className="rounded-lg border bg-white p-4">
+      <div className="mb-4 flex items-center justify-between">
+        <span className="font-semibold">Câu {index + 1}</span>
+        <div className="flex gap-1">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={onMoveUp}
+            disabled={index === 0}
+          >
+            ↑
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={onMoveDown}
+            disabled={index === total - 1}
+          >
+            ↓
+          </Button>
+          <Button size="sm" variant="ghost" onClick={onDelete}>
+            Xóa
+          </Button>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <Label>Câu hỏi</Label>
+          <Textarea
+            value={data.question}
+            onChange={(e) => update({ question: e.target.value })}
+            placeholder="Nhập câu hỏi..."
+            rows={2}
+          />
+        </div>
+
+        <MediaPicker
+          value={data.image || ""}
+          onChange={(url) => update({ image: url || undefined })}
+          label="Hình ảnh"
+        />
+        <MediaPicker
+          value={data.video || ""}
+          onChange={(url) => update({ video: url || undefined })}
+          label="Video"
+        />
+        <MediaPicker
+          value={data.audio || ""}
+          onChange={(url) => update({ audio: url || undefined })}
+          label="Audio"
+        />
+
+        <div className="flex gap-4">
+          <div>
+            <Label>Cooldown (giây)</Label>
+            <Input
+              type="number"
+              min={1}
+              max={30}
+              value={data.cooldown}
+              onChange={(e) =>
+                update({ cooldown: parseInt(e.target.value) || 5 })
+              }
+              className="w-24"
+            />
+          </div>
+          <div>
+            <Label>Thời gian trả lời (giây)</Label>
+            <Input
+              type="number"
+              min={5}
+              max={120}
+              value={data.time}
+              onChange={(e) => update({ time: parseInt(e.target.value) || 20 })}
+              className="w-24"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label>Đáp án (chọn đáp án đúng bằng radio)</Label>
+          <AnswerInput
+            answers={data.answers}
+            solution={data.solution}
+            onChange={(answers, solution) => update({ answers, solution })}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default QuestionEditor;
