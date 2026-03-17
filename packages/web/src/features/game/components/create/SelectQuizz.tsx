@@ -53,7 +53,7 @@ const SelectQuizz = ({ quizzList, onSelect }: Props) => {
                 onClick={handleSelect(quizz.id)}
               >
                 <span className="font-medium">{quizz.subject}</span>
-                <Badge variant="secondary">{quizz.questions.length} câu</Badge>
+                <Badge variant="secondary">{quizz.questions.length} questions</Badge>
               </button>
             ))}
           </div>

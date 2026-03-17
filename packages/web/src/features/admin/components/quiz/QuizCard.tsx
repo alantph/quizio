@@ -66,7 +66,7 @@ const QuizCard = ({
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button size="sm" variant="destructive">
-              Xóa
+              Delete
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

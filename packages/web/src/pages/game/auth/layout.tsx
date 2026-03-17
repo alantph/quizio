@@ -1,4 +1,4 @@
-import logo from "@quizio/web/assets/logo.svg"
+import logo from "@quizio/web/assets/logo.png"
 import Loader from "@quizio/web/features/game/components/Loader"
 import { useSocket } from "@quizio/web/features/game/contexts/socketProvider"
 import { Outlet } from "react-router"
