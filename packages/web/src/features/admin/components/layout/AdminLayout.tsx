@@ -1,22 +1,25 @@
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet } from "react-router";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 
 const AdminLayout = () => {
   const { token, setupApiClient } = useAdminAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     setupApiClient();
   }, [setupApiClient]);
 
+  if (!token) {
+    return <Outlet />;
+  }
+
   return (
     <div className="flex h-screen bg-gray-100">
-      {token && <Sidebar />}
+      <Sidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
-        {token && <TopBar />}
+        <TopBar />
         <main className="flex-1 overflow-auto p-6">
           <Outlet />
         </main>
