@@ -42,17 +42,17 @@ router.get("/:id/export", async (req, res) => {
     const headers = [
       "Username",
       ...result.questions
-        .map((q, i) => [`Q${i + 1} (đúng/sai)`, `Q${i + 1} điểm`])
+        .map((q, i) => [`Q${i + 1} (correct/wrong)`, `Q${i + 1} points`])
         .flat(),
-      "Tổng điểm",
-      "Xếp hạng",
+      "Total points",
+      "Rank",
     ];
 
     const rows = result.players.map((player) => {
       const questionCols: string[] = [];
       result.questions.forEach((q) => {
         const pr = q.playerResults.find((r) => r.username === player.username);
-        questionCols.push(pr?.correct ? "✓" : "✗");
+        questionCols.push(pr?.correct ? "Correct" : "Incorrect");
         questionCols.push(String(pr?.points ?? 0));
       });
       return [

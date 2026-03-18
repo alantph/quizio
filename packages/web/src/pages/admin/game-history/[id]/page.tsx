@@ -173,7 +173,13 @@ const GameDetailPage = () => {
                             "—"
                           )}
                         </TableCell>
-                        <TableCell>{pr.correct ? "✅" : "❌"}</TableCell>
+                        <TableCell>
+                          {pr.correct ? (
+                            <span className="font-semibold text-green-500">Correct</span>
+                          ) : (
+                            <span className="font-semibold text-red-500">Incorrect</span>
+                          )}
+                        </TableCell>
                         <TableCell>{pr.points}</TableCell>
                       </TableRow>
                     ))}
