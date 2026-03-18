@@ -1,6 +1,14 @@
 const BASE_URL = import.meta.env.VITE_API_URL || "";
 
-let tokenGetter: (() => string | null) | null = null;
+// Default token getter reads directly from localStorage so API calls work
+// even before configureApiClient is called (e.g. on page refresh).
+let tokenGetter: () => string | null = () => {
+  try {
+    return JSON.parse(localStorage.getItem("admin_token") ?? "null");
+  } catch {
+    return null;
+  }
+};
 let onUnauthorized: (() => void) | null = null;
 
 export const configureApiClient = (
@@ -15,7 +23,7 @@ export async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const token = tokenGetter?.();
+  const token = tokenGetter();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
@@ -40,7 +48,7 @@ export async function apiFetch<T>(
 }
 
 export async function apiFetchBlob(path: string): Promise<Blob> {
-  const token = tokenGetter?.();
+  const token = tokenGetter();
   const headers: Record<string, string> = {};
   if (token) headers["Authorization"] = `Bearer ${token}`;
 

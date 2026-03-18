@@ -24,6 +24,7 @@ interface QuizCardProps {
   id: string;
   subject: string;
   questionCount: number;
+  createdBy: string;
   updatedAt: string;
   onDelete: (id: string) => void;
   onExport: (id: string, subject: string) => void;
@@ -33,6 +34,7 @@ const QuizCard = ({
   id,
   subject,
   questionCount,
+  createdBy,
   updatedAt,
   onDelete,
   onExport,
@@ -42,7 +44,14 @@ const QuizCard = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{subject}</CardTitle>
+        <div className="flex items-start justify-between gap-2">
+          <CardTitle className="text-base">{subject}</CardTitle>
+          {createdBy && (
+            <span className="shrink-0 text-xs text-gray-400">
+              by {createdBy}
+            </span>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-2">

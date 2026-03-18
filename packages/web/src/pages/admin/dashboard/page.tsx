@@ -78,7 +78,9 @@ const AdminDashboardPage = () => {
         />
         <Select value={sort} onValueChange={setSort}>
           <SelectTrigger className="w-40">
-            <SelectValue />
+            <SelectValue>
+              {sort === "updatedAt" ? "Latest" : "Name A-Z"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="updatedAt">Latest</SelectItem>
@@ -112,6 +114,7 @@ const AdminDashboardPage = () => {
               id={quiz.id}
               subject={quiz.subject}
               questionCount={quiz.questionCount}
+              createdBy={quiz.createdBy}
               updatedAt={quiz.updatedAt}
               onDelete={handleDelete}
               onExport={handleExport}

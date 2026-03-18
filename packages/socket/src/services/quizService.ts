@@ -5,6 +5,7 @@ export interface QuizListItem {
   id: string;
   subject: string;
   questionCount: number;
+  createdBy: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,11 +18,18 @@ export const quizService = {
     }
     const sortOption: any =
       sort === "name" ? { subject: 1 } : { updatedAt: -1 };
-    const quizzes = await Quiz.find(query).sort(sortOption).lean();
+    const quizzes = await Quiz.find(query)
+      .sort(sortOption)
+      .populate<{ createdBy: { username: string } }>("createdBy", "username")
+      .lean();
     return quizzes.map((q) => ({
       id: q._id.toString(),
       subject: q.subject,
       questionCount: q.questions.length,
+      createdBy:
+        q.createdBy && typeof q.createdBy === "object"
+          ? (q.createdBy as { username: string }).username
+          : "",
       createdAt: q.createdAt,
       updatedAt: q.updatedAt,
     }));

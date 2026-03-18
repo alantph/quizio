@@ -4,6 +4,7 @@ export interface QuizListItem {
   id: string;
   subject: string;
   questionCount: number;
+  createdBy: string;
   createdAt: string;
   updatedAt: string;
 }

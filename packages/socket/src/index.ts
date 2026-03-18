@@ -174,6 +174,25 @@ io.on("connection", (socket: Socket) => {
     withGame(gameId, socket, (game) => game.showLeaderboard()),
   );
 
+  socket.on("manager:endGame", ({ gameId }) => {
+    if (!gameId) {
+      socket.emit("game:errorMessage", "Game not found");
+      return;
+    }
+    const game = registry.getGameById(gameId);
+    if (!game) {
+      socket.emit("game:errorMessage", "Game not found");
+      return;
+    }
+    game.abortCooldown();
+    // Save result if the game had started and at least one round was played
+    if (game.started && game.roundHistory.length > 0) {
+      game.saveResult().catch(console.error);
+    }
+    io.to(game.gameId).emit("game:reset", "Game ended by manager");
+    registry.removeGame(game.gameId);
+  });
+
   socket.on("disconnect", () => {
     console.log(`A user disconnected : ${socket.id}`);
 

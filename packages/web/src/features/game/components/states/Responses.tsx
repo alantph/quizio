@@ -132,7 +132,11 @@ const Responses = ({
                         )}
                       </td>
                       <td className="py-1 pr-4">
-                        {player.correct ? "✅" : "❌"}
+                        {player.correct ? (
+                          <span className="font-semibold text-green-400">Correct</span>
+                        ) : (
+                          <span className="font-semibold text-red-400">Incorrect</span>
+                        )}
                       </td>
                       <td className="py-1 pr-4">
                         {player.correct ? `+${player.points}` : "+0"}

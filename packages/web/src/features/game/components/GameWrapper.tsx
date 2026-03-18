@@ -1,13 +1,26 @@
 import type { Status } from "@quizio/common/types/game/status";
+import { STATUS } from "@quizio/common/types/game/status";
 import background from "@quizio/web/assets/background.webp";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import Loader from "@quizio/web/features/game/components/Loader";
 import {
   useEvent,
   useSocket,
 } from "@quizio/web/features/game/contexts/socketProvider";
 import { usePlayerStore } from "@quizio/web/features/game/stores/player";
+import { useManagerStore } from "@quizio/web/features/game/stores/manager";
 import { useQuestionStore } from "@quizio/web/features/game/stores/question";
 import { MANAGER_SKIP_BTN } from "@quizio/web/features/game/utils/constants";
 import clsx from "clsx";
@@ -20,12 +33,31 @@ type Props = PropsWithChildren & {
   manager?: boolean;
 };
 
+const ACTIVE_GAME_STATUSES: string[] = [
+  STATUS.SHOW_START,
+  STATUS.SHOW_PREPARED,
+  STATUS.SHOW_QUESTION,
+  STATUS.SELECT_ANSWER,
+  STATUS.SHOW_RESULT,
+  STATUS.SHOW_RESPONSES,
+  STATUS.SHOW_LEADERBOARD,
+];
+
 const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
-  const { isConnected } = useSocket();
+  const { isConnected, socket } = useSocket();
   const { player } = usePlayerStore();
+  const { gameId } = useManagerStore();
   const { questionStates, setQuestionStates } = useQuestionStore();
   const [isDisabled, setIsDisabled] = useState(false);
   const next = statusName ? MANAGER_SKIP_BTN[statusName] : null;
+  const showEndGame =
+    manager && statusName && ACTIVE_GAME_STATUSES.includes(statusName);
+
+  const handleEndGame = () => {
+    if (gameId) {
+      socket?.emit("manager:endGame", { gameId });
+    }
+  };
 
   useEvent("game:updateQuestion", ({ current, total }) => {
     setQuestionStates({
@@ -76,18 +108,45 @@ const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
                 </Badge>
               )}
 
-              {manager && next && (
-                <Button
-                  variant="secondary"
-                  disabled={isDisabled}
-                  className={clsx("self-end", {
-                    "pointer-events-none": isDisabled,
-                  })}
-                  onClick={handleNext}
-                >
-                  {next}
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                {showEndGame && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="sm">
+                        End Game
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>End game early?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          All players will be disconnected and the game will end
+                          immediately. This cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleEndGame}>
+                          End Game
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+
+                {manager && next && (
+                  <Button
+                    variant="secondary"
+                    disabled={isDisabled}
+                    className={clsx({
+                      "pointer-events-none": isDisabled,
+                    })}
+                    onClick={handleNext}
+                  >
+                    {next}
+                  </Button>
+                )}
+              </div>
             </div>
 
             {children}

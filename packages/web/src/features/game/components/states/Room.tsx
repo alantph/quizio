@@ -1,4 +1,15 @@
 import type { Player } from "@quizio/common/types/game"
+
+const PLAYER_COLORS = [
+  "bg-rose-500",
+  "bg-blue-500",
+  "bg-amber-500",
+  "bg-emerald-500",
+  "bg-violet-500",
+  "bg-orange-500",
+  "bg-cyan-500",
+  "bg-pink-500",
+]
 import type { ManagerStatusDataMap } from "@quizio/common/types/game/status"
 import {
   useEvent,
@@ -81,10 +92,10 @@ const Room = ({ data: { text, inviteCode } }: Props) => {
       </div>
 
       <div className="flex flex-wrap gap-3">
-        {playerList.map((player) => (
+        {playerList.map((player, index) => (
           <div
             key={player.id}
-            className="shadow-inset bg-primary rounded-md px-4 py-3 font-bold text-white"
+            className={`shadow-inset rounded-md px-4 py-3 font-bold text-white ${PLAYER_COLORS[index % PLAYER_COLORS.length]}`}
             onClick={handleKick(player.id)}
           >
             <span className="cursor-pointer text-3xl drop-shadow-md hover:line-through">

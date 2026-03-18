@@ -6,8 +6,12 @@ import {
   SFX_SNEAR_ROOL,
 } from "@quizio/web/features/game/utils/constants"
 import useScreenSize from "@quizio/web/hooks/useScreenSize"
+import { useManagerStore } from "@quizio/web/features/game/stores/manager"
+import { useQuestionStore } from "@quizio/web/features/game/stores/question"
+import { Button } from "@/components/ui/button"
 import clsx from "clsx"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router"
 import ReactConfetti from "react-confetti"
 import useSound from "use-sound"
 
@@ -63,8 +67,16 @@ const usePodiumAnimation = (topLength: number) => {
 
 const Podium = ({ data: { subject, top } }: Props) => {
   const apparition = usePodiumAnimation(top.length)
-
   const { width, height } = useScreenSize()
+  const navigate = useNavigate()
+  const { reset: resetManager } = useManagerStore()
+  const { setQuestionStates } = useQuestionStore()
+
+  const handleBackToHome = () => {
+    resetManager()
+    setQuestionStates(null)
+    navigate("/manager")
+  }
 
   return (
     <>
@@ -82,9 +94,16 @@ const Podium = ({ data: { subject, top } }: Props) => {
         </div>
       )}
       <section className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-between">
-        <h2 className="anim-show text-center text-3xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl">
-          {subject}
-        </h2>
+        <div className="flex w-full items-center justify-between px-4 pt-2">
+          <h2 className="anim-show text-center text-3xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl">
+            {subject}
+          </h2>
+          {apparition >= 4 && (
+            <Button variant="secondary" onClick={handleBackToHome}>
+              New Game
+            </Button>
+          )}
+        </div>
 
         <div
           style={{ gridTemplateColumns: `repeat(${top.length}, 1fr)` }}
@@ -107,8 +126,8 @@ const Podium = ({ data: { subject, top } }: Props) => {
               >
                 {top[1].username}
               </p>
-              <div className="bg-primary flex h-full w-full flex-col items-center gap-4 rounded-t-md pt-6 text-center shadow-2xl">
-                <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-zinc-400 bg-zinc-500 text-3xl font-bold text-white drop-shadow-lg">
+              <div className="flex h-full w-full flex-col items-center gap-4 rounded-t-md bg-zinc-400 pt-6 text-center shadow-2xl">
+                <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-zinc-300 bg-zinc-200 text-3xl font-bold text-zinc-700 drop-shadow-lg">
                   <span className="drop-shadow-md">2</span>
                 </p>
                 <p className="text-2xl font-bold text-white drop-shadow-lg">
@@ -137,8 +156,8 @@ const Podium = ({ data: { subject, top } }: Props) => {
             >
               {top[0].username}
             </p>
-            <div className="bg-primary flex h-full w-full flex-col items-center gap-4 rounded-t-md pt-6 text-center shadow-2xl">
-              <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-amber-400 bg-amber-300 text-3xl font-bold text-white drop-shadow-lg">
+            <div className="flex h-full w-full flex-col items-center gap-4 rounded-t-md bg-amber-400 pt-6 text-center shadow-2xl">
+              <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-amber-200 bg-amber-100 text-3xl font-bold text-amber-700 drop-shadow-lg">
                 <span className="drop-shadow-md">1</span>
               </p>
               <p className="text-2xl font-bold text-white drop-shadow-lg">
@@ -166,8 +185,8 @@ const Podium = ({ data: { subject, top } }: Props) => {
               >
                 {top[2].username}
               </p>
-              <div className="bg-primary flex h-full w-full flex-col items-center gap-4 rounded-t-md pt-6 text-center shadow-2xl">
-                <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-amber-800 bg-amber-700 text-3xl font-bold text-white drop-shadow-lg">
+              <div className="flex h-full w-full flex-col items-center gap-4 rounded-t-md bg-orange-700 pt-6 text-center shadow-2xl">
+                <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-orange-400 bg-orange-300 text-3xl font-bold text-orange-900 drop-shadow-lg">
                   <span className="drop-shadow-md">3</span>
                 </p>
 

@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useMediaUpload } from "../../hooks/useMediaUpload";
 
 interface MediaPickerProps {
@@ -37,13 +35,8 @@ const MediaPicker = ({
   onChange,
   label = "Media",
 }: MediaPickerProps) => {
-  const [urlInput, setUrlInput] = useState(value || "");
   const fileRef = useRef<HTMLInputElement>(null);
   const { state, error, upload } = useMediaUpload();
-
-  const handleUrlCommit = () => {
-    onChange(urlInput);
-  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,51 +44,41 @@ const MediaPicker = ({
     const url = await upload(file);
     if (url) {
       onChange(url);
-      setUrlInput(url);
     }
+    e.target.value = "";
   };
 
   return (
     <div>
       <label className="mb-1 block text-sm font-medium">{label}</label>
-      <Tabs defaultValue="url">
-        <TabsList>
-          <TabsTrigger value="url">URL</TabsTrigger>
-          <TabsTrigger value="upload">Upload</TabsTrigger>
-        </TabsList>
-        <TabsContent value="url">
-          <div className="flex gap-2">
-            <Input
-              value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
-              onBlur={handleUrlCommit}
-              placeholder="https://..."
-            />
-            <Button size="sm" onClick={handleUrlCommit}>
-              OK
-            </Button>
-          </div>
-          <MediaPreview url={value} />
-        </TabsContent>
-        <TabsContent value="upload">
-          <input
-            type="file"
-            ref={fileRef}
-            accept="image/*,video/*,audio/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
+      <input
+        type="file"
+        ref={fileRef}
+        accept="image/*,video/*,audio/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          onClick={() => fileRef.current?.click()}
+          disabled={state === "uploading"}
+        >
+          {state === "uploading" ? "Uploading..." : value ? "Replace file" : "Upload file"}
+        </Button>
+        {value && state !== "uploading" && (
           <Button
-            variant="outline"
-            onClick={() => fileRef.current?.click()}
-            disabled={state === "uploading"}
+            variant="ghost"
+            size="sm"
+            className="text-red-500 hover:text-red-600"
+            onClick={() => onChange("")}
           >
-            {state === "uploading" ? "Uploading..." : "Choose file"}
+            Remove
           </Button>
-          {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-          {value && state === "done" && <MediaPreview url={value} />}
-        </TabsContent>
-      </Tabs>
+        )}
+      </div>
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {value && <MediaPreview url={value} />}
     </div>
   );
 };

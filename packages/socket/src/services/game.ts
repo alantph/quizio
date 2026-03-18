@@ -14,6 +14,35 @@ import { v4 as uuid } from "uuid";
 
 const registry = Registry.getInstance();
 
+const CORRECT_MESSAGES = [
+  "Nice!",
+  "Correct!",
+  "Well done!",
+  "Nailed it!",
+  "Spot on!",
+  "Brilliant!",
+  "You got it!",
+  "Perfect!",
+  "Outstanding!",
+  "Excellent!",
+];
+
+const INCORRECT_MESSAGES = [
+  "Keep it up!",
+  "Almost there!",
+  "Not quite!",
+  "Try harder!",
+  "So close!",
+  "Next time!",
+  "Don't give up!",
+  "Keep going!",
+  "Better luck next time!",
+  "You'll get it!",
+];
+
+const randomPick = (arr: string[]) =>
+  arr[Math.floor(Math.random() * arr.length)];
+
 class Game {
   io: Server;
 
@@ -463,7 +492,9 @@ class Game {
 
       this.sendStatus(player.id, STATUS.SHOW_RESULT, {
         correct: player.lastCorrect,
-        message: player.lastCorrect ? "Nice!" : "Too bad",
+        message: player.lastCorrect
+          ? randomPick(CORRECT_MESSAGES)
+          : randomPick(INCORRECT_MESSAGES),
         points: player.lastPoints,
         myPoints: player.points,
         rank,
@@ -586,6 +617,25 @@ class Game {
     this.abortCooldown();
   }
 
+  async saveResult() {
+    try {
+      await gameResultService.save({
+        quizzId: this.quizzId,
+        quizzSubject: this.quizz.subject,
+        totalPlayers: this.players.length,
+        createdBy: this.createdBy,
+        players: this.leaderboard.map((p, i) => ({
+          username: p.username,
+          totalPoints: p.points,
+          rank: i + 1,
+        })),
+        questions: this.roundHistory,
+      });
+    } catch (err) {
+      console.error("Failed to save game result:", err);
+    }
+  }
+
   async showLeaderboard() {
     const isLastRound =
       this.round.currentQuestion + 1 === this.quizz.questions.length;
@@ -593,22 +643,7 @@ class Game {
     if (isLastRound) {
       this.started = false;
 
-      try {
-        await gameResultService.save({
-          quizzId: this.quizzId,
-          quizzSubject: this.quizz.subject,
-          totalPlayers: this.players.length,
-          createdBy: this.createdBy,
-          players: this.leaderboard.map((p, i) => ({
-            username: p.username,
-            totalPoints: p.points,
-            rank: i + 1,
-          })),
-          questions: this.roundHistory,
-        });
-      } catch (err) {
-        console.error("Failed to save game result:", err);
-      }
+      await this.saveResult();
 
       this.broadcastStatus(STATUS.FINISHED, {
         subject: this.quizz.subject,

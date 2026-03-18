@@ -103,7 +103,7 @@ const AdminSettingsPage = () => {
             <TableRow>
               <TableHead>Username</TableHead>
               <TableHead>Created</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
