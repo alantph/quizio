@@ -29,6 +29,7 @@ const io: Server = new ServerIO(httpServer, {
 app.use("/api/admin", adminRouter);
 
 const registry = Registry.getInstance();
+const pendingManagerReset = new Map<string, ReturnType<typeof setTimeout>>();
 
 async function main() {
   httpServer.listen(WS_PORT, "0.0.0.0", () => {
@@ -55,6 +56,12 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("manager:reconnect", ({ gameId }) => {
+    const pending = pendingManagerReset.get(gameId);
+    if (pending) {
+      clearTimeout(pending);
+      pendingManagerReset.delete(gameId);
+    }
+
     const game = registry.getManagerGame(
       gameId,
       socket.handshake.auth.clientId,
@@ -203,10 +210,18 @@ io.on("connection", (socket: Socket) => {
       registry.markGameAsEmpty(managerGame);
 
       if (!managerGame.started) {
-        console.log("Reset game (manager disconnected)");
-        managerGame.abortCooldown();
-        io.to(managerGame.gameId).emit("game:reset", "Manager disconnected");
-        registry.removeGame(managerGame.gameId);
+        const gameId = managerGame.gameId;
+        const timeout = setTimeout(() => {
+          const game = registry.getGameById(gameId);
+          if (game && !game.manager.connected) {
+            console.log("Reset game (manager disconnected)");
+            game.abortCooldown();
+            io.to(gameId).emit("game:reset", "Manager disconnected");
+            registry.removeGame(gameId);
+          }
+          pendingManagerReset.delete(gameId);
+        }, 10_000);
+        pendingManagerReset.set(gameId, timeout);
 
         return;
       }

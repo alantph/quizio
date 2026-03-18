@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import logo from "@quizio/web/assets/logo.png";
 import { useAdminAuth } from "@quizio/web/features/admin/hooks/useAdminAuth";
 import { useState } from "react";
 import { Navigate } from "react-router";
@@ -29,40 +30,52 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-sm">
+    <section className="relative flex min-h-screen flex-col items-center justify-center">
+      <div className="absolute h-full w-full overflow-hidden">
+        <div className="bg-primary/15 absolute -top-[15vmin] -left-[15vmin] min-h-[75vmin] min-w-[75vmin] rounded-full"></div>
+        <div className="bg-primary/15 absolute -right-[15vmin] -bottom-[15vmin] min-h-[75vmin] min-w-[75vmin] rotate-45"></div>
+      </div>
+
+      <img src={logo} className="z-10 mb-10 h-16" alt="logo" />
+
+      <Card className="z-10 w-full max-w-80">
         <CardHeader>
-          <CardTitle>Quizio Admin</CardTitle>
+          <CardTitle className="text-center text-xl">Quizio Admin</CardTitle>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+        <CardContent className="flex flex-col gap-3">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin"
+                placeholder="Username"
                 autoFocus
               />
             </div>
-            <div>
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
               />
             </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full bg-primary text-white hover:bg-primary/90"
+              disabled={loading}
+            >
               {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
         </CardContent>
       </Card>
-    </div>
+    </section>
   );
 };
 

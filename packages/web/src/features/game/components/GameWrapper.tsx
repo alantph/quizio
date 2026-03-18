@@ -3,6 +3,7 @@ import { STATUS } from "@quizio/common/types/game/status";
 import background from "@quizio/web/assets/background.webp";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,17 +47,27 @@ const ACTIVE_GAME_STATUSES: string[] = [
 const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
   const { isConnected, socket } = useSocket();
   const { player } = usePlayerStore();
-  const { gameId } = useManagerStore();
+  const { gameId, reset } = useManagerStore();
   const { questionStates, setQuestionStates } = useQuestionStore();
   const [isDisabled, setIsDisabled] = useState(false);
+  const navigate = useNavigate();
   const next = statusName ? MANAGER_SKIP_BTN[statusName] : null;
   const showEndGame =
     manager && statusName && ACTIVE_GAME_STATUSES.includes(statusName);
+  const showBackToHome = manager && statusName === STATUS.SHOW_ROOM;
 
   const handleEndGame = () => {
     if (gameId) {
       socket?.emit("manager:endGame", { gameId });
     }
+  };
+
+  const handleBackToHome = () => {
+    if (gameId) {
+      socket?.emit("manager:abortQuiz", { gameId });
+    }
+    reset();
+    navigate("/manager");
   };
 
   useEvent("game:updateQuestion", ({ current, total }) => {
@@ -99,14 +110,21 @@ const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
         ) : (
           <>
             <div className="flex w-full justify-between p-4">
-              {questionStates && (
-                <Badge
-                  variant="outline"
-                  className="shadow-inset bg-white px-4 py-2 text-base font-bold text-black"
-                >
-                  {`${questionStates.current} / ${questionStates.total}`}
-                </Badge>
-              )}
+              <div>
+                {questionStates && (
+                  <Badge
+                    variant="outline"
+                    className="shadow-inset bg-white px-4 py-2 text-base font-bold text-black"
+                  >
+                    {`${questionStates.current} / ${questionStates.total}`}
+                  </Badge>
+                )}
+                {showBackToHome && (
+                  <Button variant="secondary" size="sm" onClick={handleBackToHome}>
+                    Back to Home
+                  </Button>
+                )}
+              </div>
 
               <div className="flex items-center gap-2">
                 {showEndGame && (
