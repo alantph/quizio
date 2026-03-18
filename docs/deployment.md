@@ -14,7 +14,7 @@
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/your-username/quizio.git
+git clone https://github.com/alantph/quizio.git
 cd quizio
 pnpm install
 ```
