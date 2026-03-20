@@ -15,6 +15,7 @@ export type Answer = {
 export type Quizz = {
   subject: string
   background?: string
+  autoNextDelay?: number
   questions: {
     question: string
     image?: string

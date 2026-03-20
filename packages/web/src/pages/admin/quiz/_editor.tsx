@@ -23,6 +23,7 @@ const defaultQuestion = (): QuestionData => ({
 const QuizEditorPage = ({ mode, id }: Props) => {
   const navigate = useNavigate();
   const [subject, setSubject] = useState("");
+  const [autoNextDelay, setAutoNextDelay] = useState<number | null>(null);
   const [globalBackground, setGlobalBackground] = useState<
     string | undefined
   >(undefined);
@@ -36,6 +37,7 @@ const QuizEditorPage = ({ mode, id }: Props) => {
     if (mode === "edit" && id) {
       quizzesApi.getById(id).then((quiz) => {
         setSubject(quiz.subject);
+        setAutoNextDelay(quiz.autoNextDelay ?? null);
         setGlobalBackground(quiz.background);
         setQuestions(quiz.questions as QuestionData[]);
       });
@@ -74,7 +76,7 @@ const QuizEditorPage = ({ mode, id }: Props) => {
     setError(null);
     setSaving(true);
     try {
-      const data = { subject, background: globalBackground || undefined, questions };
+      const data = { subject, background: globalBackground || undefined, autoNextDelay: autoNextDelay ?? undefined, questions };
       if (mode === "new") {
         await quizzesApi.create(data);
       } else {
@@ -96,6 +98,26 @@ const QuizEditorPage = ({ mode, id }: Props) => {
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           placeholder="Enter quiz name..."
+        />
+      </div>
+
+      <div>
+        <Label>Auto-next delay (seconds)</Label>
+        <p className="mb-1 text-xs text-gray-500">
+          After each question ends, automatically advance after N seconds. Leave
+          empty to require manual next.
+        </p>
+        <Input
+          type="number"
+          min={1}
+          max={60}
+          value={autoNextDelay ?? ""}
+          onChange={(e) => {
+            const val = e.target.value;
+            setAutoNextDelay(val === "" ? null : Math.max(1, parseInt(val, 10)));
+          }}
+          placeholder="e.g. 5"
+          className="w-32"
         />
       </div>
 

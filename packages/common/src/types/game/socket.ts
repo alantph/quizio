@@ -60,6 +60,7 @@ export interface ServerToClientEvents {
     gameId: string;
     inviteCode: string;
     background?: string;
+    autoNextDelay: number | null;
   }) => void;
   "manager:statusUpdate": (_data: {
     status: Status;

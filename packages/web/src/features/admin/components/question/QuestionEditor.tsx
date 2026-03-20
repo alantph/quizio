@@ -70,6 +70,32 @@ const QuestionEditor = ({
       </div>
 
       <div className="space-y-4">
+        <div className="flex flex-wrap gap-4">
+          <MediaPicker
+            value={data.image || ""}
+            onChange={(url) => update({ image: url || undefined })}
+            label="Image"
+          />
+          <MediaPicker
+            value={data.video || ""}
+            onChange={(url) => update({ video: url || undefined })}
+            label="Video"
+          />
+          <MediaPicker
+            value={data.audio || ""}
+            onChange={(url) => update({ audio: url || undefined })}
+            label="Audio"
+          />
+          <div>
+            <Label>Background</Label>
+            <BackgroundPicker
+              value={data.background}
+              onChange={(url) => update({ background: url })}
+              onApplyToAll={onApplyBackgroundToAll ?? (() => {})}
+            />
+          </div>
+        </div>
+
         <div>
           <Label>Question</Label>
           <Textarea
@@ -77,31 +103,6 @@ const QuestionEditor = ({
             onChange={(e) => update({ question: e.target.value })}
             placeholder="Enter question..."
             rows={2}
-          />
-        </div>
-
-        <MediaPicker
-          value={data.image || ""}
-          onChange={(url) => update({ image: url || undefined })}
-          label="Image"
-        />
-        <MediaPicker
-          value={data.video || ""}
-          onChange={(url) => update({ video: url || undefined })}
-          label="Video"
-        />
-        <MediaPicker
-          value={data.audio || ""}
-          onChange={(url) => update({ audio: url || undefined })}
-          label="Audio"
-        />
-
-        <div>
-          <Label>Background</Label>
-          <BackgroundPicker
-            value={data.background}
-            onChange={(url) => update({ background: url })}
-            onApplyToAll={onApplyBackgroundToAll ?? (() => {})}
           />
         </div>
 

@@ -13,6 +13,7 @@ export interface QuizDetail {
   _id: string;
   subject: string;
   background?: string;
+  autoNextDelay?: number;
   questions: {
     question: string;
     answers: string[];

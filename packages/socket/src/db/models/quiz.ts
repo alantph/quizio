@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IQuiz extends Document {
   subject: string;
   background?: string;
+  autoNextDelay?: number;
   questions: {
     question: string;
     answers: string[];
@@ -35,6 +36,7 @@ const quizSchema = new Schema<IQuiz>(
   {
     subject: { type: String, required: true },
     background: String,
+    autoNextDelay: { type: Number, default: null },
     questions: [questionSchema],
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },

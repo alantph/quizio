@@ -11,6 +11,7 @@ type ManagerStore<T> = {
   status: Status<T> | null;
   players: Player[];
   answeredPlayers: { playerId: string; username: string }[];
+  autoNextDelay: number | null;
 
   setGameId: (_gameId: string | null) => void;
   setStatus: <K extends keyof T>(_name: K, _data: T[K]) => void;
@@ -18,6 +19,7 @@ type ManagerStore<T> = {
   setPlayers: (_players: Player[]) => void;
   addAnsweredPlayer: (_data: { playerId: string; username: string }) => void;
   clearAnsweredPlayers: () => void;
+  setAutoNextDelay: (_delay: number | null) => void;
 
   reset: () => void;
 };
@@ -27,6 +29,7 @@ const initialState = {
   status: null,
   players: [],
   answeredPlayers: [],
+  autoNextDelay: null,
 };
 
 export const useManagerStore = create<ManagerStore<StatusDataMap>>((set) => ({
@@ -43,6 +46,7 @@ export const useManagerStore = create<ManagerStore<StatusDataMap>>((set) => ({
   addAnsweredPlayer: (data) =>
     set((state) => ({ answeredPlayers: [...state.answeredPlayers, data] })),
   clearAnsweredPlayers: () => set({ answeredPlayers: [] }),
+  setAutoNextDelay: (autoNextDelay) => set({ autoNextDelay }),
 
   reset: () => set(initialState),
 }));

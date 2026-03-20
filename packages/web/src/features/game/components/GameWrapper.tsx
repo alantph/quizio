@@ -28,6 +28,8 @@ import clsx from "clsx";
 import { type PropsWithChildren, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
+const AUTO_NEXT_STATUSES: Status[] = [STATUS.SHOW_RESPONSES, STATUS.SHOW_LEADERBOARD];
+
 type Props = PropsWithChildren & {
   statusName: Status | undefined;
   onNext?: () => void;
@@ -48,10 +50,67 @@ const ACTIVE_GAME_STATUSES: string[] = [
 const GameWrapper = ({ children, statusName, onNext, manager, background }: Props) => {
   const { isConnected, socket } = useSocket();
   const { player } = usePlayerStore();
-  const { gameId, reset } = useManagerStore();
+  const { gameId, reset, autoNextDelay } = useManagerStore();
   const { questionStates, setQuestionStates } = useQuestionStore();
   const [isDisabled, setIsDisabled] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [countdownPaused, setCountdownPaused] = useState(false);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const navigate = useNavigate();
+
+  const clearCountdown = () => {
+    if (countdownRef.current) {
+      clearInterval(countdownRef.current);
+      countdownRef.current = null;
+    }
+    setCountdown(null);
+    setCountdownPaused(false);
+  };
+
+  // Start or clear countdown when status changes
+  useEffect(() => {
+    clearCountdown();
+    if (
+      manager &&
+      statusName &&
+      AUTO_NEXT_STATUSES.includes(statusName) &&
+      autoNextDelay &&
+      autoNextDelay > 0
+    ) {
+      setCountdown(autoNextDelay);
+      countdownRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev === null || prev <= 1) {
+            clearInterval(countdownRef.current!);
+            countdownRef.current = null;
+            return null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (countdownRef.current) clearInterval(countdownRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusName]);
+
+  // Auto-next when countdown reaches null after counting (not from clearCountdown)
+  const prevCountdownRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (
+      prevCountdownRef.current !== null &&
+      countdown === null &&
+      !countdownPaused &&
+      countdownRef.current === null &&
+      manager &&
+      statusName &&
+      AUTO_NEXT_STATUSES.includes(statusName)
+    ) {
+      onNext?.();
+    }
+    prevCountdownRef.current = countdown;
+  }, [countdown, countdownPaused, manager, statusName, onNext]);
 
   const lastBgRef = useRef<string | undefined>(undefined);
   if (background !== undefined) {
@@ -62,6 +121,12 @@ const GameWrapper = ({ children, statusName, onNext, manager, background }: Prop
   const showEndGame =
     manager && statusName && ACTIVE_GAME_STATUSES.includes(statusName);
   const showBackToHome = manager && statusName === STATUS.SHOW_ROOM;
+  const showCountdownControls =
+    manager &&
+    statusName &&
+    AUTO_NEXT_STATUSES.includes(statusName) &&
+    autoNextDelay &&
+    autoNextDelay > 0;
 
   const handleEndGame = () => {
     if (gameId) {
@@ -94,8 +159,18 @@ const GameWrapper = ({ children, statusName, onNext, manager, background }: Prop
   }, [statusName]);
 
   const handleNext = () => {
+    clearCountdown();
     setIsDisabled(true);
     onNext?.();
+  };
+
+  const handleStop = () => {
+    if (countdownRef.current) {
+      clearInterval(countdownRef.current);
+      countdownRef.current = null;
+    }
+    setCountdown(null);
+    setCountdownPaused(true);
   };
 
   return (
@@ -157,6 +232,27 @@ const GameWrapper = ({ children, statusName, onNext, manager, background }: Prop
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
+                )}
+
+                {showCountdownControls && (
+                  <>
+                    {countdown !== null && (
+                      <Badge
+                        variant="outline"
+                        className="bg-white px-3 py-2 text-base font-bold text-black tabular-nums"
+                      >
+                        {countdown}s
+                      </Badge>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={countdownPaused}
+                      onClick={handleStop}
+                    >
+                      Stop
+                    </Button>
+                  </>
                 )}
 
                 {manager && next && (

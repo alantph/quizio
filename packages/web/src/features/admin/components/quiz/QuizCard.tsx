@@ -61,7 +61,7 @@ const QuizCard = ({
           </span>
         </div>
       </CardContent>
-      <CardFooter className="flex gap-2">
+      <CardFooter className="flex items-center gap-2">
         <Button size="sm" onClick={() => navigate(`/admin/quiz/${id}`)}>
           Edit
         </Button>
@@ -74,7 +74,7 @@ const QuizCard = ({
         </Button>
         <Button
           size="sm"
-          variant="secondary"
+          className="bg-blue-600 text-white hover:bg-blue-700"
           onClick={() => navigate(`/start/${id}`)}
         >
           Start Game

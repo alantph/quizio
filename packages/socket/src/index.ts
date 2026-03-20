@@ -126,6 +126,7 @@ io.on("connection", (socket: Socket) => {
         id: quizzDoc._id.toString(),
         subject: quizzDoc.subject,
         background: quizzDoc.background,
+        autoNextDelay: quizzDoc.autoNextDelay ?? undefined,
         questions: quizzDoc.questions,
       };
 

@@ -152,6 +152,7 @@ class Game {
       gameId: this.gameId,
       inviteCode: roomInvite,
       background: this.quizz.background,
+      autoNextDelay: this.quizz.autoNextDelay ?? null,
     });
 
     console.log(
