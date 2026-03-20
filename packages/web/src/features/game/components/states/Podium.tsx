@@ -75,7 +75,7 @@ const Podium = ({ data: { subject, top } }: Props) => {
   const handleBackToHome = () => {
     resetManager()
     setQuestionStates(null)
-    navigate("/manager")
+    navigate("/admin/dashboard")
   }
 
   return (
@@ -100,7 +100,7 @@ const Podium = ({ data: { subject, top } }: Props) => {
           </h2>
           {apparition >= 4 && (
             <Button variant="secondary" onClick={handleBackToHome}>
-              New Game
+              Back to Home
             </Button>
           )}
         </div>

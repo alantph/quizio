@@ -11,7 +11,7 @@ import { useNavigate, useParams } from "react-router";
 const AdminGameStartPage = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const { socket, isConnected } = useSocket();
-  const { setGameId, setStatus, setAutoNextDelay } = useManagerStore();
+  const { setGameId, setStatus, setAutoNextDelay, reset } = useManagerStore();
   const navigate = useNavigate();
   const hasSent = useRef(false);
 
@@ -44,6 +44,7 @@ const AdminGameStartPage = () => {
   }, [isConnected, startGame]);
 
   useEvent("manager:gameCreated", ({ gameId, inviteCode, background, autoNextDelay }) => {
+    reset();
     setGameId(gameId);
     setAutoNextDelay(autoNextDelay ?? null);
     setStatus(STATUS.SHOW_ROOM, {

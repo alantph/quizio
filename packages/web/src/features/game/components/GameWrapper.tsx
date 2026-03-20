@@ -56,20 +56,44 @@ const GameWrapper = ({ children, statusName, onNext, manager, background }: Prop
   const [countdown, setCountdown] = useState<number | null>(null);
   const [countdownPaused, setCountdownPaused] = useState(false);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const remainingRef = useRef<number>(0);
+  const onNextRef = useRef(onNext);
   const navigate = useNavigate();
 
-  const clearCountdown = () => {
+  // Keep onNextRef fresh without re-triggering effects
+  useEffect(() => {
+    onNextRef.current = onNext;
+  });
+
+  const stopInterval = () => {
     if (countdownRef.current) {
       clearInterval(countdownRef.current);
       countdownRef.current = null;
     }
-    setCountdown(null);
-    setCountdownPaused(false);
   };
 
-  // Start or clear countdown when status changes
+  const startInterval = (from: number) => {
+    remainingRef.current = from;
+    setCountdown(from);
+    countdownRef.current = setInterval(() => {
+      remainingRef.current -= 1;
+      if (remainingRef.current <= 0) {
+        stopInterval();
+        setCountdown(null);
+        setCountdownPaused(false);
+        onNextRef.current?.();
+      } else {
+        setCountdown(remainingRef.current);
+      }
+    }, 1000);
+  };
+
+  // Start/clear countdown when status changes
   useEffect(() => {
-    clearCountdown();
+    stopInterval();
+    setCountdown(null);
+    setCountdownPaused(false);
+
     if (
       manager &&
       statusName &&
@@ -77,40 +101,12 @@ const GameWrapper = ({ children, statusName, onNext, manager, background }: Prop
       autoNextDelay &&
       autoNextDelay > 0
     ) {
-      setCountdown(autoNextDelay);
-      countdownRef.current = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev === null || prev <= 1) {
-            clearInterval(countdownRef.current!);
-            countdownRef.current = null;
-            return null;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+      startInterval(autoNextDelay);
     }
-    return () => {
-      if (countdownRef.current) clearInterval(countdownRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusName]);
 
-  // Auto-next when countdown reaches null after counting (not from clearCountdown)
-  const prevCountdownRef = useRef<number | null>(null);
-  useEffect(() => {
-    if (
-      prevCountdownRef.current !== null &&
-      countdown === null &&
-      !countdownPaused &&
-      countdownRef.current === null &&
-      manager &&
-      statusName &&
-      AUTO_NEXT_STATUSES.includes(statusName)
-    ) {
-      onNext?.();
-    }
-    prevCountdownRef.current = countdown;
-  }, [countdown, countdownPaused, manager, statusName, onNext]);
+    return stopInterval;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusName, manager, autoNextDelay]);
 
   const lastBgRef = useRef<string | undefined>(undefined);
   if (background !== undefined) {
@@ -159,18 +155,21 @@ const GameWrapper = ({ children, statusName, onNext, manager, background }: Prop
   }, [statusName]);
 
   const handleNext = () => {
-    clearCountdown();
+    stopInterval();
+    setCountdown(null);
+    setCountdownPaused(false);
     setIsDisabled(true);
     onNext?.();
   };
 
   const handleStop = () => {
-    if (countdownRef.current) {
-      clearInterval(countdownRef.current);
-      countdownRef.current = null;
-    }
-    setCountdown(null);
+    stopInterval();
     setCountdownPaused(true);
+  };
+
+  const handleResume = () => {
+    setCountdownPaused(false);
+    startInterval(remainingRef.current > 0 ? remainingRef.current : autoNextDelay ?? 0);
   };
 
   return (
@@ -191,8 +190,8 @@ const GameWrapper = ({ children, statusName, onNext, manager, background }: Prop
           </div>
         ) : (
           <>
-            <div className="flex w-full justify-between p-4">
-              <div>
+            <div className="flex w-full items-center justify-between p-4">
+              <div className="flex items-center gap-2">
                 {questionStates && (
                   <Badge
                     variant="outline"
@@ -244,14 +243,23 @@ const GameWrapper = ({ children, statusName, onNext, manager, background }: Prop
                         {countdown}s
                       </Badge>
                     )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={countdownPaused}
-                      onClick={handleStop}
-                    >
-                      Stop
-                    </Button>
+                    {countdownPaused ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleResume}
+                      >
+                        Resume
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleStop}
+                      >
+                        Stop
+                      </Button>
+                    )}
                   </>
                 )}
 

@@ -114,7 +114,6 @@ const BackgroundPicker = ({
       <Button
         type="button"
         variant="outline"
-        size="sm"
         onClick={() => setOpen(true)}
         className="flex items-center gap-2"
       >
