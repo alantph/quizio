@@ -10,6 +10,7 @@ export const questionSchema = z
     image: z.string().url().optional().or(z.literal("")),
     video: z.string().url().optional().or(z.literal("")),
     audio: z.string().url().optional().or(z.literal("")),
+    background: z.string().url().optional().or(z.literal("")),
   })
   .refine((data) => data.solution < data.answers.length, {
     message: "solution must be within answers bounds",
@@ -18,6 +19,7 @@ export const questionSchema = z
 
 export const quizSchema = z.object({
   subject: z.string().min(1).max(100),
+  background: z.string().url().optional().or(z.literal("")),
   questions: z.array(questionSchema).min(1).max(50),
 });
 

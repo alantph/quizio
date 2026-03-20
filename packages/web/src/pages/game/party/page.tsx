@@ -57,8 +57,10 @@ const PlayerGamePage = () => {
       ? GAME_STATE_COMPONENTS[status.name]
       : null
 
+  const background = (status?.data as any)?.background as string | undefined
+
   return (
-    <GameWrapper statusName={status?.name}>
+    <GameWrapper statusName={status?.name} background={background}>
       {CurrentComponent && <CurrentComponent data={status!.data as never} />}
     </GameWrapper>
   )

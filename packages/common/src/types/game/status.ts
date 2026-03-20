@@ -18,7 +18,7 @@ export type Status = (typeof STATUS)[keyof typeof STATUS];
 export type CommonStatusDataMap = {
   SHOW_START: { time: number; subject: string };
   SHOW_PREPARED: { totalAnswers: number; questionNumber: number };
-  SHOW_QUESTION: { question: string; image?: string; cooldown: number };
+  SHOW_QUESTION: { question: string; image?: string; cooldown: number; background?: string };
   SELECT_ANSWER: {
     question: string;
     answers: string[];
@@ -27,6 +27,7 @@ export type CommonStatusDataMap = {
     audio?: string;
     time: number;
     totalPlayer: number;
+    background?: string;
   };
   SHOW_RESULT: {
     correct: boolean;
@@ -37,7 +38,7 @@ export type CommonStatusDataMap = {
     aheadOfMe: string | null;
   };
   WAIT: { text: string };
-  FINISHED: { subject: string; top: Player[] };
+  FINISHED: { subject: string; top: Player[]; background?: string };
 };
 
 export type PlayerResponseData = {
@@ -49,7 +50,7 @@ export type PlayerResponseData = {
 };
 
 type ManagerExtraStatus = {
-  SHOW_ROOM: { text: string; inviteCode?: string };
+  SHOW_ROOM: { text: string; inviteCode?: string; background?: string };
   SHOW_RESPONSES: {
     question: string;
     responses: Record<number, number>;
@@ -59,7 +60,7 @@ type ManagerExtraStatus = {
     video?: string;
     players: PlayerResponseData[];
   };
-  SHOW_LEADERBOARD: { oldLeaderboard: Player[]; leaderboard: Player[] };
+  SHOW_LEADERBOARD: { oldLeaderboard: Player[]; leaderboard: Player[]; background?: string };
 };
 
 export type PlayerStatusDataMap = CommonStatusDataMap;

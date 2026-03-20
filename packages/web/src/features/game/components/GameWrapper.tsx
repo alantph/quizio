@@ -1,6 +1,6 @@
 import type { Status } from "@quizio/common/types/game/status";
 import { STATUS } from "@quizio/common/types/game/status";
-import background from "@quizio/web/assets/background.webp";
+import defaultBackground from "@quizio/web/assets/background.webp";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router";
@@ -25,13 +25,14 @@ import { useManagerStore } from "@quizio/web/features/game/stores/manager";
 import { useQuestionStore } from "@quizio/web/features/game/stores/question";
 import { MANAGER_SKIP_BTN } from "@quizio/web/features/game/utils/constants";
 import clsx from "clsx";
-import { type PropsWithChildren, useEffect, useState } from "react";
+import { type PropsWithChildren, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 type Props = PropsWithChildren & {
   statusName: Status | undefined;
   onNext?: () => void;
   manager?: boolean;
+  background?: string;
 };
 
 const ACTIVE_GAME_STATUSES: string[] = [
@@ -44,13 +45,19 @@ const ACTIVE_GAME_STATUSES: string[] = [
   STATUS.SHOW_LEADERBOARD,
 ];
 
-const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
+const GameWrapper = ({ children, statusName, onNext, manager, background }: Props) => {
   const { isConnected, socket } = useSocket();
   const { player } = usePlayerStore();
   const { gameId, reset } = useManagerStore();
   const { questionStates, setQuestionStates } = useQuestionStore();
   const [isDisabled, setIsDisabled] = useState(false);
   const navigate = useNavigate();
+
+  const lastBgRef = useRef<string | undefined>(undefined);
+  if (background !== undefined) {
+    lastBgRef.current = background;
+  }
+  const activeBg = lastBgRef.current;
   const next = statusName ? MANAGER_SKIP_BTN[statusName] : null;
   const showEndGame =
     manager && statusName && ACTIVE_GAME_STATUSES.includes(statusName);
@@ -67,7 +74,7 @@ const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
       socket?.emit("manager:abortQuiz", { gameId });
     }
     reset();
-    navigate("/manager");
+    navigate("/admin/dashboard");
   };
 
   useEvent("game:updateQuestion", ({ current, total }) => {
@@ -96,7 +103,7 @@ const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
       <div className="fixed top-0 left-0 h-full w-full">
         <img
           className="pointer-events-none h-full w-full object-cover"
-          src={background}
+          src={activeBg || defaultBackground}
           alt="background"
         />
       </div>

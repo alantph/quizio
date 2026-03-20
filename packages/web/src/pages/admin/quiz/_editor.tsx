@@ -23,6 +23,9 @@ const defaultQuestion = (): QuestionData => ({
 const QuizEditorPage = ({ mode, id }: Props) => {
   const navigate = useNavigate();
   const [subject, setSubject] = useState("");
+  const [globalBackground, setGlobalBackground] = useState<
+    string | undefined
+  >(undefined);
   const [questions, setQuestions] = useState<QuestionData[]>([
     defaultQuestion(),
   ]);
@@ -33,6 +36,7 @@ const QuizEditorPage = ({ mode, id }: Props) => {
     if (mode === "edit" && id) {
       quizzesApi.getById(id).then((quiz) => {
         setSubject(quiz.subject);
+        setGlobalBackground(quiz.background);
         setQuestions(quiz.questions as QuestionData[]);
       });
     }
@@ -70,7 +74,7 @@ const QuizEditorPage = ({ mode, id }: Props) => {
     setError(null);
     setSaving(true);
     try {
-      const data = { subject, questions };
+      const data = { subject, background: globalBackground || undefined, questions };
       if (mode === "new") {
         await quizzesApi.create(data);
       } else {
@@ -106,6 +110,10 @@ const QuizEditorPage = ({ mode, id }: Props) => {
             onMoveUp={() => moveUp(i)}
             onMoveDown={() => moveDown(i)}
             onDelete={() => deleteQuestion(i)}
+            onApplyBackgroundToAll={(url) => {
+              setGlobalBackground(url);
+              setQuestions((prev) => prev.map((q) => ({ ...q, background: undefined })));
+            }}
           />
         ))}
       </div>

@@ -2,7 +2,7 @@ import AuthLayout from "@quizio/web/pages/game/auth/layout";
 import PlayerAuthPage from "@quizio/web/pages/game/auth/page";
 import { GameLayout } from "@quizio/web/pages/game/layout";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
-import AuthManagerPage from "./pages/game/auth/manager/page";
+import AdminGameStartPage from "./pages/game/admin-start/page";
 import ManagerGamePage from "./pages/game/party/manager/page";
 import PlayerGamePage from "./pages/game/party/page";
 import AdminLayoutPage from "./pages/admin/layout";
@@ -27,11 +27,11 @@ const router = createBrowserRouter([
             path: "/",
             element: <PlayerAuthPage />,
           },
-          {
-            path: "/manager",
-            element: <AuthManagerPage />,
-          },
         ],
+      },
+      {
+        path: "/start/:quizId",
+        element: <AdminGameStartPage />,
       },
       {
         path: "/party/:gameId",

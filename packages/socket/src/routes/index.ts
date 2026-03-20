@@ -5,6 +5,7 @@ import quizzesRouter from "./quizzes";
 import uploadsRouter from "./uploads";
 import settingsRouter from "./settings";
 import gameResultsRouter from "./gameResults";
+import backgroundsRouter from "./backgrounds";
 
 const router = Router();
 
@@ -33,5 +34,6 @@ router.use("/quizzes", authMiddleware, quizzesRouter);
 router.use("/uploads", authMiddleware, uploadsRouter);
 router.use("/settings", authMiddleware, settingsRouter);
 router.use("/game-results", authMiddleware, gameResultsRouter);
+router.use("/backgrounds", authMiddleware, backgroundsRouter);
 
 export default router;

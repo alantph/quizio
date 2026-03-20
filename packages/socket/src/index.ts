@@ -1,6 +1,7 @@
 import http from "http";
 import express from "express";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 import { Server as ServerIO } from "socket.io";
 import type { Server, Socket } from "@quizio/common/types/game/socket";
 import { inviteCodeValidator } from "@quizio/common/validators/auth";
@@ -104,6 +105,44 @@ io.on("connection", (socket: Socket) => {
     }
   });
 
+  socket.on("manager:authWithToken", async ({ token, quizId }) => {
+    try {
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || "dev-secret",
+      ) as { userId: string; username: string; role: string };
+
+      const quizzDoc = (await Quiz.findById(quizId).lean()) as any;
+      if (!quizzDoc) {
+        socket.emit("game:errorMessage", "Quiz not found");
+        return;
+      }
+
+      (socket as any).data = {
+        user: { userId: decoded.userId, username: decoded.username },
+      };
+
+      const quizz: QuizzWithId = {
+        id: quizzDoc._id.toString(),
+        subject: quizzDoc.subject,
+        background: quizzDoc.background,
+        questions: quizzDoc.questions,
+      };
+
+      const game = new Game(
+        io,
+        socket,
+        quizz,
+        quizzDoc._id.toString(),
+        decoded.username,
+      );
+      registry.addGame(game);
+    } catch (err) {
+      console.error("manager:authWithToken error:", err);
+      socket.emit("manager:errorMessage", "Authentication failed");
+    }
+  });
+
   socket.on("game:create", async (quizzId) => {
     try {
       const quizzDoc = (await Quiz.findById(quizzId).lean()) as any;
@@ -114,6 +153,7 @@ io.on("connection", (socket: Socket) => {
       const quizz: QuizzWithId = {
         id: quizzDoc._id.toString(),
         subject: quizzDoc.subject,
+        background: quizzDoc.background,
         questions: quizzDoc.questions,
       };
       const createdBy = (socket as any).data?.user?.username || "";

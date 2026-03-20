@@ -12,6 +12,7 @@ export interface QuizListItem {
 export interface QuizDetail {
   _id: string;
   subject: string;
+  background?: string;
   questions: {
     question: string;
     answers: string[];
@@ -21,6 +22,7 @@ export interface QuizDetail {
     image?: string;
     video?: string;
     audio?: string;
+    background?: string;
   }[];
 }
 

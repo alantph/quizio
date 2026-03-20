@@ -52,7 +52,7 @@ const ManagerGamePage = () => {
   );
 
   useEvent("game:reset", (message) => {
-    navigate("/manager");
+    navigate("/admin/dashboard");
     reset();
     setQuestionStates(null);
     toast.error(message);
@@ -81,8 +81,10 @@ const ManagerGamePage = () => {
       ? GAME_STATE_COMPONENTS_MANAGER[status.name]
       : null;
 
+  const background = (status?.data as any)?.background as string | undefined;
+
   return (
-    <GameWrapper statusName={status?.name} onNext={handleSkip} manager>
+    <GameWrapper statusName={status?.name} onNext={handleSkip} manager background={background}>
       {CurrentComponent && <CurrentComponent data={status!.data as never} />}
     </GameWrapper>
   );

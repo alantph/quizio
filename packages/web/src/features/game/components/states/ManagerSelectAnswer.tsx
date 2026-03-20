@@ -1,12 +1,19 @@
 import type { StatusDataMap } from "@quizio/common/types/game/status";
+import AnswerButton from "@quizio/web/features/game/components/AnswerButton";
 import { useManagerStore } from "@quizio/web/features/game/stores/manager";
+import {
+  ANSWERS_COLORS,
+  ANSWERS_ICONS,
+} from "@quizio/web/features/game/utils/constants";
 import clsx from "clsx";
 
 type Props = {
   data: StatusDataMap["SELECT_ANSWER"];
 };
 
-const ManagerSelectAnswer = ({ data: { question, totalPlayer } }: Props) => {
+const ManagerSelectAnswer = ({
+  data: { question, answers, totalPlayer },
+}: Props) => {
   const { players, answeredPlayers } = useManagerStore();
   const answeredSet = new Set(answeredPlayers.map((p) => p.playerId));
   const answeredCount = answeredPlayers.length;
@@ -20,6 +27,22 @@ const ManagerSelectAnswer = ({ data: { question, totalPlayer } }: Props) => {
       <h2 className="text-center text-2xl font-bold text-white drop-shadow-lg md:text-4xl">
         {question}
       </h2>
+
+      <div className="grid w-full max-w-3xl grid-cols-2 gap-3">
+        {answers.map((answer, index) => {
+          const Icon = ANSWERS_ICONS[index];
+          const color = ANSWERS_COLORS[index];
+          return (
+            <AnswerButton
+              key={index}
+              icon={Icon}
+              className={clsx(color, "cursor-default text-white")}
+            >
+              {answer}
+            </AnswerButton>
+          );
+        })}
+      </div>
 
       <div className="w-full max-w-md">
         <div className="mb-2 flex justify-between text-sm font-semibold text-white">

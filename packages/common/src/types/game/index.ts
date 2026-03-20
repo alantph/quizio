@@ -14,11 +14,13 @@ export type Answer = {
 
 export type Quizz = {
   subject: string
+  background?: string
   questions: {
     question: string
     image?: string
     video?: string
     audio?: string
+    background?: string
     answers: string[]
     solution: number
     cooldown: number

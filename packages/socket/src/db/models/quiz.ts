@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IQuiz extends Document {
   subject: string;
+  background?: string;
   questions: {
     question: string;
     answers: string[];
@@ -11,6 +12,7 @@ export interface IQuiz extends Document {
     image?: string;
     video?: string;
     audio?: string;
+    background?: string;
   }[];
   createdBy: mongoose.Types.ObjectId;
   createdAt: Date;
@@ -26,11 +28,13 @@ const questionSchema = new Schema({
   image: String,
   video: String,
   audio: String,
+  background: String,
 });
 
 const quizSchema = new Schema<IQuiz>(
   {
     subject: { type: String, required: true },
+    background: String,
     questions: [questionSchema],
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },

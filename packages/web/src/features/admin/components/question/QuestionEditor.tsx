@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import AnswerInput from "./AnswerInput";
 import MediaPicker from "./MediaPicker";
+import BackgroundPicker from "../quiz/BackgroundPicker";
 
 export interface QuestionData {
   question: string;
@@ -14,6 +15,7 @@ export interface QuestionData {
   image?: string;
   video?: string;
   audio?: string;
+  background?: string;
 }
 
 interface QuestionEditorProps {
@@ -24,6 +26,7 @@ interface QuestionEditorProps {
   onMoveUp: () => void;
   onMoveDown: () => void;
   onDelete: () => void;
+  onApplyBackgroundToAll?: (url: string | undefined) => void;
 }
 
 const QuestionEditor = ({
@@ -34,6 +37,7 @@ const QuestionEditor = ({
   onMoveUp,
   onMoveDown,
   onDelete,
+  onApplyBackgroundToAll,
 }: QuestionEditorProps) => {
   const update = (patch: Partial<QuestionData>) =>
     onChange({ ...data, ...patch });
@@ -91,6 +95,15 @@ const QuestionEditor = ({
           onChange={(url) => update({ audio: url || undefined })}
           label="Audio"
         />
+
+        <div>
+          <Label>Background</Label>
+          <BackgroundPicker
+            value={data.background}
+            onChange={(url) => update({ background: url })}
+            onApplyToAll={onApplyBackgroundToAll ?? (() => {})}
+          />
+        </div>
 
         <div className="flex gap-4">
           <div>

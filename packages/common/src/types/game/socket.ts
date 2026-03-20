@@ -59,6 +59,7 @@ export interface ServerToClientEvents {
   "manager:gameCreated": (_data: {
     gameId: string;
     inviteCode: string;
+    background?: string;
   }) => void;
   "manager:statusUpdate": (_data: {
     status: Status;
@@ -83,6 +84,7 @@ export interface ClientToServerEvents {
     username: string;
     password: string;
   }) => void;
+  "manager:authWithToken": (_data: { token: string; quizId: string }) => void;
   "manager:reconnect": (_message: { gameId: string }) => void;
   "manager:kickPlayer": (_message: {
     gameId: string;

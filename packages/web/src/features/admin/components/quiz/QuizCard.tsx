@@ -72,6 +72,13 @@ const QuizCard = ({
         >
           Export
         </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={() => navigate(`/start/${id}`)}
+        >
+          Start Game
+        </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button size="sm" variant="destructive">

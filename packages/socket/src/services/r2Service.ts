@@ -2,6 +2,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 
 const getClient = () =>
@@ -40,5 +41,21 @@ export const r2Service = {
         Key: key,
       }),
     );
+  },
+
+  async listFiles(prefix: string): Promise<{ key: string; url: string }[]> {
+    const client = getClient();
+    const result = await client.send(
+      new ListObjectsV2Command({
+        Bucket: process.env.R2_BUCKET_NAME || "",
+        Prefix: prefix,
+      }),
+    );
+    return (result.Contents || [])
+      .filter((obj) => obj.Key)
+      .map((obj) => ({
+        key: obj.Key!,
+        url: `${process.env.R2_PUBLIC_URL}/${obj.Key}`,
+      }));
   },
 };

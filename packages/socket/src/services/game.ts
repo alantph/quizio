@@ -151,6 +151,7 @@ class Game {
     socket.emit("manager:gameCreated", {
       gameId: this.gameId,
       inviteCode: roomInvite,
+      background: this.quizz.background,
     });
 
     console.log(
@@ -421,6 +422,7 @@ class Game {
       question: question.question,
       image: question.image,
       cooldown: question.cooldown,
+      background: question.background || this.quizz.background,
     });
 
     await sleep(question.cooldown);
@@ -439,6 +441,7 @@ class Game {
       audio: question.audio,
       time: question.time,
       totalPlayer: this.players.length,
+      background: question.background || this.quizz.background,
     });
 
     await this.startCooldown(question.time);
@@ -648,6 +651,7 @@ class Game {
       this.broadcastStatus(STATUS.FINISHED, {
         subject: this.quizz.subject,
         top: this.leaderboard.slice(0, 3),
+        background: this.quizz.background,
       });
 
       return;
@@ -660,6 +664,7 @@ class Game {
     this.sendStatus(this.manager.id, STATUS.SHOW_LEADERBOARD, {
       oldLeaderboard: oldLeaderboard.slice(0, 5),
       leaderboard: this.leaderboard.slice(0, 5),
+      background: this.quizz.background,
     });
 
     this.tempOldLeaderboard = null;
